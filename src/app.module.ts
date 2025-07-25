@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { LoansModule } from './loans/loans.module';
 import { UsersModule } from './users/users.module';
 import { BooksModule } from './books/books.module';
@@ -22,13 +20,11 @@ import { ConfigModule } from '@nestjs/config';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       // synchronize: true,
     }),
-    LoansModule,
     UsersModule,
-    BooksModule,
     LibrariesModule,
+    BooksModule,
+    LoansModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   // Initialisation de la base de données

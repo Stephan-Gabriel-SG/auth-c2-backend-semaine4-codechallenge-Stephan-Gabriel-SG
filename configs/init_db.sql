@@ -52,10 +52,11 @@ ALTER TABLE `loans` ADD FOREIGN KEY (`borrower_id`) REFERENCES `users` (`id`);
 ALTER TABLE `loans` ADD FOREIGN KEY (`book_id`) REFERENCES `books` (`id`);
 
 -- Insertion de 3 utilisateurs
+-- Password test2025
 INSERT INTO users (name, email, password_hash, created_at) VALUES
-  ('Stéphan Gabriel', 'stephan@example.com', 'hash123', CURRENT_TIMESTAMP),
-  ('Aina Rakoto', 'aina@example.com', 'hash456', CURRENT_TIMESTAMP),
-  ('Jean Claude', 'jean@example.com', 'hash789', CURRENT_TIMESTAMP);
+  ('Stéphan Gabriel', 'stephan@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP),
+  ('Aina Rakoto', 'aina@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP),
+  ('Jean Claude', 'jean@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP);
 
 -- Insertion de bibliothèques (chaque user gère une seule bibliothèque)
 INSERT INTO libraries (user_id, name, location, created_at) VALUES

@@ -2,7 +2,6 @@ import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
-  ForeignKey,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -13,10 +12,9 @@ export class Library {
   @PrimaryGeneratedColumn()
   id: number;
 
-  //   @ForeignKey(() => User, (user) => user.id)
   @OneToOne(() => User, (user) => user.library)
   @JoinColumn({ name: 'user_id' })
-  user_id: User;
+  user: User;
 
   @Column()
   name: string;
