@@ -1,8 +1,10 @@
+import { Book } from 'src/books/entities/book.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -12,10 +14,6 @@ export class Library {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user) => user.library)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
   @Column()
   name: string;
 
@@ -24,4 +22,11 @@ export class Library {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
+
+  @OneToOne(() => User, (user) => user.library)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @OneToMany(() => Book, (book) => book.library)
+  books: Book[];
 }
