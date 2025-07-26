@@ -50,6 +50,16 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
+  @Get(':id/loans')
+  @ApiResponse({
+    status: 200,
+    description: 'Liste des emprunts',
+    type: SuccessResponseDto,
+  })
+  findLoans(@Param('id') id: string) {
+    return this.usersService.findLoans(+id);
+  }
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
   //   return this.usersService.update(+id, updateUserDto);

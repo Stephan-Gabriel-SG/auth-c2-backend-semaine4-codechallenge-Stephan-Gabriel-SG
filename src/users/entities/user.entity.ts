@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Library } from 'src/libraries/entities/library.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Loan } from 'src/loans/entities/loan.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -13,7 +20,7 @@ export class User {
   name: string;
 
   @ApiProperty({ required: true, example: '7Ct5o@example.com' })
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @ApiProperty({ required: true, example: 'password123' })
@@ -26,4 +33,7 @@ export class User {
 
   @OneToOne(() => Library, (library) => library.user)
   library: Library;
+
+  @OneToMany(() => Loan, (loan) => loan.user)
+  loans: Loan[];
 }

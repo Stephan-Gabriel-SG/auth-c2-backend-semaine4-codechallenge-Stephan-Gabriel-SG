@@ -71,6 +71,40 @@ export class UsersService {
     };
   }
 
+  async findLoans(id: number) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { id },
+        relations: ['loans'],
+      });
+      if (user) {
+        return {
+          success: true,
+          message: 'Liste des emprunts',
+          data: user.loans,
+        };
+      } else {
+        return {
+          success: false,
+          code: 'NOT_FOUND',
+          message: 'Utilisateur introuvable',
+        };
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          code: error.name,
+          message: error.message,
+          success: false,
+        };
+      }
+      return {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: "Une erreur est survenue lors de la creation de l'utilisateur",
+        success: false,
+      };
+    }
+  }
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
