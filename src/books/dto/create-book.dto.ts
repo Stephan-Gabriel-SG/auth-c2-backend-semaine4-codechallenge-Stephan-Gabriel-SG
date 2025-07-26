@@ -38,10 +38,11 @@ export class CreateBookDto {
 
   @ApiProperty({ required: false, example: true })
   @IsOptional()
-  @IsBoolean()
-  @Transform(({ value: value }: { value: boolean | undefined }) => {
-    if (value !== undefined) return value;
-    return true;
+  // @IsBoolean()
+  @Transform(({ value }) => {
+    if (value == 'true' || value == '1') return true;
+    if (value == 'false' || value == '0') return false;
+    return false;
   })
   available: boolean;
 }

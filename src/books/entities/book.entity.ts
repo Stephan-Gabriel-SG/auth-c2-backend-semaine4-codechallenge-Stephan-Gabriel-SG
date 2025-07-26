@@ -1,9 +1,11 @@
 import { Library } from 'src/libraries/entities/library.entity';
+import { Loan } from 'src/loans/entities/loan.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -33,4 +35,7 @@ export class Book {
   @ManyToOne(() => Library, (library) => library.books)
   @JoinColumn({ name: 'library_id' })
   library: Library;
+
+  @OneToMany(() => Loan, (loan) => loan.book)
+  loans: Loan[];
 }

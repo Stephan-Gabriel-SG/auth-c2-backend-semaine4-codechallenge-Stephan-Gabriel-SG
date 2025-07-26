@@ -27,6 +27,7 @@ export class BooksService {
       }
       const newBook = await this.bookRepository.save({
         ...createBookDto,
+        available: true,
         library: { id: library_id },
       });
       return {
