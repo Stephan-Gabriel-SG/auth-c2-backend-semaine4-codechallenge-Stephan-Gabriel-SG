@@ -30,7 +30,7 @@ export class LoansController {
     return this.loansService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch(':id/return')
   update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
     return this.loansService.update(+id, updateLoanDto);
   }
