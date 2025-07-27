@@ -37,7 +37,7 @@ CREATE TABLE `books` (
 CREATE TABLE `loans` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `book_id` integer,
-  `borrower_id` integer,
+  `user_id` integer,
   `start_date` date,
   `end_date` date,
   `returned` bool
@@ -47,7 +47,7 @@ ALTER TABLE `libraries` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 ALTER TABLE `books` ADD FOREIGN KEY (`library_id`) REFERENCES `libraries` (`id`);
 
-ALTER TABLE `loans` ADD FOREIGN KEY (`borrower_id`) REFERENCES `users` (`id`);
+ALTER TABLE `loans` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 ALTER TABLE `loans` ADD FOREIGN KEY (`book_id`) REFERENCES `books` (`id`);
 
@@ -71,6 +71,6 @@ INSERT INTO books (library_id, title, author, resume, genre, available, created_
   (3, 'L’Art de la guerre', 'Sun Tzu', 'Stratégie militaire', 'Classique', false, CURRENT_TIMESTAMP);
 
 -- Insertion de prêts
-INSERT INTO loans (book_id, borrower_id, start_date, end_date, returned) VALUES
+INSERT INTO loans (book_id, user_id, start_date, end_date, returned) VALUES
   (1, 3, '2025-07-20', '2025-07-27', false),
   (2, 1, '2025-07-15', '2025-07-22', true);
