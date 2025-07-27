@@ -28,7 +28,7 @@ Cette API permet la gestion d'une bibliothèque numérique : utilisateurs, livre
 ## Structure du Projet Bibliothèque API
 
 ```bash.
-├── configs/          # Fichiers de configuration
+├── configs/          # Fichiers de configuration (init sql DB)
 ├── src/              # Code source principal
 │ ├── books/          # Module des livres
 │ ├── common/         # Utilitaires partagés
@@ -53,6 +53,16 @@ Cette API permet la gestion d'une bibliothèque numérique : utilisateurs, livre
 
 ## Installation
 
+## 🛠 Installation et Configuration
+
+### Prérequis
+
+- Node.js (v18 ou supérieur)
+- MySQL (v8 ou supérieur)
+- Git
+
+### 1. Installation du projet
+
 ```bash
 # Cloner le dépôt
 git clone https://github.com/usdscommunity/c2-backend-semaine3-codechallenge-Stephan-Gabriel-SG.git
@@ -64,23 +74,45 @@ cd c2-backend-semaine3-codechallenge-Stephan-Gabriel-SG
 npm install
 ```
 
-## Configuration des variables d’environnement
+## Configuration de la base de données
 
-> Avant de démarrer le projet, assurez-vous de configurer les variables d’environnement.
+1. Initialiser la base MySQL
 
-Un fichier `.env.example` est fourni à la racine du projet. Il contient les clés nécessaires pour le bon fonctionnement de l'application.
+```shell
+# Se connecter à MySQL (avec vos identifiants)
+mysql -u root -p
 
-### Étapes à suivre :
-
-1. **Duplique** le fichier `.env.example` et renomme-le `.env` :
-
-```bash
-   cp .env.example .env
+# Dans l'invite MySQL, exécuter :
+source configs/init_db.sql
 ```
 
+2. Configurer les variables d'environnement
+
+```shell
+# Copier le template .env
+cp .env.example .env
+```
+
+Editez ensuite le fichier .env avec vos paramètres :
+
+```ini
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=mini_library  # Doit correspondre au nom dans init_db.sql
+DB_USER=root          # Ou un utilisateur dédié
+DB_PSWD=votre_mot_de_passe
+```
+
+3. Lancement de l'application
+
 ```bash
-# Démarrer le serveur en mode développement
+# Mode développement (avec rechargement automatique)
 npm run start:dev
+
+# Ou en mode production
+npm run build
+npm run start:prod
+### Étapes à suivre :
 
 ```
 
@@ -136,7 +168,3 @@ npm run start:dev
 | `GET`    | `/loans/:id`        | Récupère les détails d'un emprunt     | Param: `id` (number)         |
 | `PATCH`  | `/loans/:id/return` | Marque un livre comme retourné        | Param: `id` (number)         |
 | `DELETE` | `/loans/:id`        | Supprime un emprunt (admin seulement) | Param: `id` (number)         |
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
