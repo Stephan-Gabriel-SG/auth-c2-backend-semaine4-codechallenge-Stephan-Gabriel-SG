@@ -38,12 +38,23 @@ export class BooksService {
       const newBook = await this.bookRepository.save({
         ...createBookDto,
         available: true,
-        // library: { id: library_id },
+        library: { id: library_id },
       });
       return {
         success: true,
         message: 'Livre ajouter avec success',
-        data: [newBook],
+        data: [
+          {
+            id: newBook.id,
+            title: newBook.title,
+            author: newBook.author,
+            resume: newBook.resume,
+            genre: newBook.genre,
+            available: newBook.available,
+            created_at: newBook.created_at,
+            library_id: newBook.library,
+          },
+        ],
       };
     } catch (error) {
       return formatErrorResponse(error);
