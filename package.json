@@ -1,10 +1,10 @@
 {
   "name": "Mini bibliotheque",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "APIrest pour une mini-bibliotheque local. challenge C2 semaine 3",
+  "author": "NANDRASANTSOA Stéphan Gabriel",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
