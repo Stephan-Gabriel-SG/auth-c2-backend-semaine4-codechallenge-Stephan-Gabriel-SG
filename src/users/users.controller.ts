@@ -4,14 +4,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiExtraModels,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
 import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
-import { User } from './entities/user.entity';
+import { CreateLoanDto } from 'src/loans/dto/create-loan.dto';
 
 @Controller('users')
 export class UsersController {
@@ -21,9 +23,21 @@ export class UsersController {
   @ApiOperation({ summary: 'Créer un nouvel utilisateur' })
   @ApiBody({ type: CreateUserDto, required: true })
   @ApiResponse({
-    status: 201,
-    description: 'Utilisateur créer avec success',
-    type: SuccessResponseDto<User>,
+    status: 200,
+    description: 'Liste des livres',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(CreateUserDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiNotFoundResponse({
     description: 'Utilisateur deja existant',
@@ -33,13 +47,26 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Lister tous les utilisateurs' })
+  @ApiExtraModels(SuccessResponseDto, CreateUserDto)
   @ApiResponse({
     status: 200,
-    description: 'Liste des utilisateurs récupérée avec succès',
-    type: SuccessResponseDto,
+    description: 'Liste des livres',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(CreateUserDto) },
+            },
+          },
+        },
+      ],
+    },
   })
+  @Get()
+  @ApiOperation({ summary: 'Lister tous les utilisateurs' })
   @ApiInternalServerErrorResponse({
     description: 'Une erreur interne est survenue',
     type: ErrorResponseDto,
@@ -55,10 +82,23 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtenir un utilisateur donné' })
+  @ApiExtraModels(SuccessResponseDto, CreateUserDto)
   @ApiResponse({
     status: 200,
-    description: 'Utilisateur trouvé',
-    type: SuccessResponseDto,
+    description: 'Trouver un utilisateur',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(CreateUserDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiNotFoundResponse({
     description: 'Utilisateur non trouvé',
@@ -78,10 +118,23 @@ export class UsersController {
 
   @Get(':id/loans')
   @ApiOperation({ summary: 'Obtenir les emprunts liés à un utilisateur donné' })
+  @ApiExtraModels(SuccessResponseDto, CreateLoanDto)
   @ApiResponse({
     status: 200,
-    description: 'Liste des emprunts de l’utilisateur',
-    type: SuccessResponseDto,
+    description: "Liste des emprunts faite pas l'utilisateur",
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(CreateLoanDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiBadRequestResponse({
     description: 'ID invalide ou mal formé',
