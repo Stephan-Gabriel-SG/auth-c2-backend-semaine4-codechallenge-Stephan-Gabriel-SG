@@ -42,6 +42,7 @@ export class UsersService {
             id: user.id,
             name: user.name,
             email: user.email,
+            created_at: user.created_at,
           },
         ],
         message: 'Utilisateur cree avec success',

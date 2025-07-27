@@ -16,4 +16,10 @@ export class UserDto {
     example: 'john@example.com',
   })
   email: string;
+
+  @ApiProperty({
+    required: true,
+    example: '2022-01-01T00:00:00.000Z',
+  })
+  created_at: Date;
 }
