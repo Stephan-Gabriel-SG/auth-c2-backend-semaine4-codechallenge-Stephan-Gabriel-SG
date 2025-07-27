@@ -92,17 +92,32 @@ export class UsersService {
     try {
       const user = await this.usersRepository.findOne({
         where: { id },
-        relations: ['loans'],
+        relations: ['loans', 'loans.book'],
       });
-      if (user) {
-        return {
-          success: true,
-          message: 'Liste des emprunts',
-          data: user.loans,
-        };
-      } else {
+      if (!user) {
         throw new NotFoundException('Utilisateur introuvable');
       }
+
+      const formattedLoans = user.loans.map((loan) => ({
+        id: loan.id,
+        start_date: loan.start_date,
+        end_date: loan.end_date,
+        returned: loan.returned,
+        user: {
+          id: user.id,
+          name: user.name,
+        },
+        book: {
+          id: loan.book.id,
+          title: loan.book.title,
+        },
+      }));
+
+      return {
+        success: true,
+        message: 'Liste des emprunts',
+        data: formattedLoans,
+      };
     } catch (error) {
       return formatErrorResponse(error);
     }

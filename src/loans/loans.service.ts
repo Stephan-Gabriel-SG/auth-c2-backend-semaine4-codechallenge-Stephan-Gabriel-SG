@@ -66,7 +66,22 @@ export class LoansService {
       return {
         success: true,
         message: "L'emprunt a été créé avec succès.",
-        data: [addedLoan],
+        data: [
+          {
+            id: addedLoan.id,
+            start_date: addedLoan.start_date,
+            end_date: addedLoan.end_date,
+            returned: addedLoan.returned,
+            user: {
+              id: addedLoan.user.id,
+              name: addedLoan.user.name,
+            },
+            book: {
+              id: addedLoan.book.id,
+              title: addedLoan.book.title,
+            },
+          },
+        ],
       };
     } catch (error) {
       return formatErrorResponse(error);
@@ -80,7 +95,20 @@ export class LoansService {
       });
       return {
         success: true,
-        data: allLoans,
+        data: allLoans.map((loan) => ({
+          id: loan.id,
+          start_date: loan.start_date,
+          end_date: loan.end_date,
+          returned: loan.returned,
+          user: {
+            id: loan.user.id,
+            name: loan.user.name,
+          },
+          book: {
+            id: loan.book.id,
+            title: loan.book.title,
+          },
+        })),
         message: 'Liste des emprunts',
       };
     } catch (error) {
@@ -103,7 +131,22 @@ export class LoansService {
       return {
         success: true,
         message: 'Emprunt trouve avec success',
-        data: [loan],
+        data: [
+          {
+            id: loan.id,
+            start_date: loan.start_date,
+            end_date: loan.end_date,
+            returned: loan.returned,
+            user: {
+              id: loan.user.id,
+              name: loan.user.name,
+            },
+            book: {
+              id: loan.book.id,
+              title: loan.book.title,
+            },
+          },
+        ],
       };
     } catch (error) {
       return formatErrorResponse(error);
@@ -162,7 +205,22 @@ export class LoansService {
       return {
         success: true,
         message: 'Emprunt supprimé avec success',
-        data: [loan],
+        data: [
+          {
+            id: loan.id,
+            start_date: loan.start_date,
+            end_date: loan.end_date,
+            returned: loan.returned,
+            user: {
+              id: loan.user.id,
+              name: loan.user.name,
+            },
+            book: {
+              id: loan.book.id,
+              title: loan.book.title,
+            },
+          },
+        ],
       };
     } catch (error) {
       return formatErrorResponse(error);
