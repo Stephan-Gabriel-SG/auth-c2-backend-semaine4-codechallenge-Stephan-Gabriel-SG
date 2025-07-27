@@ -12,14 +12,17 @@ import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import {
   ApiBody,
+  ApiExtraModels,
   ApiOperation,
   ApiParam,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
 import { Loan } from './entities/loan.entity';
 import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
+import { LoanDto } from './dto/loan.dto';
 
 @ApiTags('Loans')
 @Controller('loans')
@@ -29,10 +32,23 @@ export class LoansController {
   @Post()
   @ApiOperation({ summary: 'Créer un prêt' })
   @ApiBody({ type: CreateLoanDto })
+  @ApiExtraModels(SuccessResponseDto, LoanDto)
   @ApiResponse({
     status: 201,
     description: 'Prêt créé avec succès',
-    type: SuccessResponseDto<Loan>,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LoanDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: 400,
@@ -61,10 +77,23 @@ export class LoansController {
     type: Number,
     description: 'Identifiant du prêt',
   })
+  @ApiExtraModels(SuccessResponseDto, LoanDto)
   @ApiResponse({
     status: 200,
     description: 'Prêt trouvé',
-    type: SuccessResponseDto<Loan>,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LoanDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: 404,
@@ -83,10 +112,23 @@ export class LoansController {
     description: 'Identifiant du prêt',
   })
   @ApiBody({ type: UpdateLoanDto })
+  @ApiExtraModels(SuccessResponseDto, LoanDto)
   @ApiResponse({
-    status: 200,
-    description: 'Prêt mis à jour avec succès',
-    type: SuccessResponseDto<Loan>,
+    status: 201,
+    description: 'Mettre un pret a jour',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LoanDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: 400,
@@ -104,10 +146,23 @@ export class LoansController {
     type: Number,
     description: 'Identifiant du prêt',
   })
+  @ApiExtraModels(SuccessResponseDto, LoanDto)
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Prêt supprimé',
-    type: SuccessResponseDto<Loan>,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LoanDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: 404,

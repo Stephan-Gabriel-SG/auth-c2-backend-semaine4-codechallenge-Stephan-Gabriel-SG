@@ -1,18 +1,20 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { CreateBookDto } from './dto/create-book.dto';
 import {
   ApiBody,
+  ApiExtraModels,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { FilterBookDto } from './dto/filter-book.dto';
-import { Book } from './entities/book.entity';
 import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
 import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
+import { BookDto } from './dto/book.dto';
+import { CreateBookDto } from './dto/create-book.dto';
 
 @ApiTags('Books')
 @Controller('books')
@@ -22,10 +24,23 @@ export class BooksController {
   @Post()
   @ApiOperation({ summary: 'Créer un nouveau livre' })
   @ApiBody({ type: CreateBookDto })
+  @ApiExtraModels(SuccessResponseDto, BookDto)
   @ApiResponse({
     status: 201,
     description: 'Livre créé avec succès',
-    type: SuccessResponseDto<Book>,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(BookDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: 400,
@@ -56,11 +71,6 @@ export class BooksController {
     type: Boolean,
     description: 'Filtrer par disponibilité (true/false)',
   })
-  @ApiResponse({
-    status: 200,
-    description: 'Liste des livres récupérée avec succès',
-    type: SuccessResponseDto<Book[]>,
-  })
   @ApiQuery({ name: 'genre', required: false, type: String })
   @ApiQuery({ name: 'author', required: false, type: String })
   @ApiQuery({ name: 'available', required: false, type: Boolean })
@@ -76,10 +86,23 @@ export class BooksController {
     required: true,
     description: 'Identifiant unique du livre',
   })
+  @ApiExtraModels(SuccessResponseDto, BookDto)
   @ApiResponse({
     status: 200,
     description: 'Livre trouvé avec succès',
-    type: SuccessResponseDto<Book>,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(BookDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: 400,

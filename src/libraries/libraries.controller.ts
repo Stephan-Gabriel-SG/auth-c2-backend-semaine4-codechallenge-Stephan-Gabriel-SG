@@ -3,15 +3,18 @@ import { LibrariesService } from './libraries.service';
 import { CreateLibraryDto } from './dto/create-library.dto';
 import {
   ApiBody,
+  ApiExtraModels,
   ApiNotFoundResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
 import { Library } from './entities/library.entity';
 import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
+import { LibraryDto } from './dto/library.dto';
 
 @ApiTags('Libraries')
 @Controller('libraries')
@@ -21,6 +24,24 @@ export class LibrariesController {
   @Post()
   @ApiOperation({ summary: 'Créer une nouvelle bibliothèque' })
   @ApiBody({ type: CreateLibraryDto })
+  @ApiExtraModels(SuccessResponseDto, LibraryDto)
+  @ApiResponse({
+    status: 201,
+    description: 'Bibliothèque créée avec succès',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LibraryDto) },
+            },
+          },
+        },
+      ],
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Bibliothèque créée avec succès',
@@ -32,10 +53,23 @@ export class LibrariesController {
 
   @Get()
   @ApiOperation({ summary: 'Lister toutes les bibliothèques' })
+  @ApiExtraModels(SuccessResponseDto, LibraryDto)
   @ApiResponse({
     status: 200,
     description: 'Liste des bibliothèques récupérée',
-    type: SuccessResponseDto<Library[]>,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LibraryDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   findAll() {
     return this.librariesService.findAll();
@@ -49,10 +83,23 @@ export class LibrariesController {
     description: 'Identifiant unique de la bibliothèque',
     type: Number,
   })
+  @ApiExtraModels(SuccessResponseDto, LibraryDto)
   @ApiResponse({
     status: 200,
-    description: 'Bibliothèque trouvée',
-    type: SuccessResponseDto<Library>,
+    description: 'Bibliothèque trouvéee avec succès',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LibraryDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiNotFoundResponse({
     description: 'Bibliothèque non trouvée',

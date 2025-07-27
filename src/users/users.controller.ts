@@ -13,7 +13,9 @@ import {
 } from '@nestjs/swagger';
 import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
 import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
-import { CreateLoanDto } from 'src/loans/dto/create-loan.dto';
+import { CreateBookDto } from 'src/books/dto/create-book.dto';
+import { UserDto } from './dto/user.dto';
+import { LoanDto } from 'src/loans/dto/loan.dto';
 
 @Controller('users')
 export class UsersController {
@@ -47,7 +49,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @ApiExtraModels(SuccessResponseDto, CreateUserDto)
+  @ApiExtraModels(SuccessResponseDto, CreateBookDto)
   @ApiResponse({
     status: 200,
     description: 'Liste des livres',
@@ -58,7 +60,7 @@ export class UsersController {
           properties: {
             data: {
               type: 'array',
-              items: { $ref: getSchemaPath(CreateUserDto) },
+              items: { $ref: getSchemaPath(UserDto) },
             },
           },
         },
@@ -82,7 +84,7 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtenir un utilisateur donné' })
-  @ApiExtraModels(SuccessResponseDto, CreateUserDto)
+  @ApiExtraModels(SuccessResponseDto, UserDto)
   @ApiResponse({
     status: 200,
     description: 'Trouver un utilisateur',
@@ -92,8 +94,8 @@ export class UsersController {
         {
           properties: {
             data: {
-              type: 'array',
-              items: { $ref: getSchemaPath(CreateUserDto) },
+              type: 'object',
+              items: { $ref: getSchemaPath(UserDto) },
             },
           },
         },
@@ -118,7 +120,7 @@ export class UsersController {
 
   @Get(':id/loans')
   @ApiOperation({ summary: 'Obtenir les emprunts liés à un utilisateur donné' })
-  @ApiExtraModels(SuccessResponseDto, CreateLoanDto)
+  @ApiExtraModels(SuccessResponseDto, LoanDto)
   @ApiResponse({
     status: 200,
     description: "Liste des emprunts faite pas l'utilisateur",
@@ -129,7 +131,7 @@ export class UsersController {
           properties: {
             data: {
               type: 'array',
-              items: { $ref: getSchemaPath(CreateLoanDto) },
+              items: { $ref: getSchemaPath(LoanDto) },
             },
           },
         },
