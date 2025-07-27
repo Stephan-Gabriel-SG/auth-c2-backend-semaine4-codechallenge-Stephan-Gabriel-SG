@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +10,8 @@ import { Loan } from './entities/loan.entity';
 import { Book } from 'src/books/entities/book.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { isValidNumericId } from 'src/common/utils/id-validation';
+import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
 
 @Injectable()
 export class LoansService {
@@ -21,22 +27,20 @@ export class LoansService {
       const user = await this.userRepository.findOne({
         where: { id: user_id },
       });
+      if (!isValidNumericId(user_id)) {
+        throw new BadRequestException("ID de l' utilisateur fourni invalide");
+      }
+      if (!isValidNumericId(book_id)) {
+        throw new BadRequestException('ID du livre fourni invalide');
+      }
       if (!user) {
-        return {
-          success: false,
-          code: 'NOT_FOUND',
-          message: 'Utilisateur introuvable',
-        };
+        throw new BadRequestException('Utilisateur introuvable');
       }
       const book = await this.bookRepository.findOne({
         where: { id: book_id },
       });
       if (!book) {
-        return {
-          success: false,
-          code: 'NOT_FOUND',
-          message: 'Livre introuvable',
-        };
+        throw new BadRequestException('Livre introuvable');
       }
       if (book.available) {
         if (
@@ -47,11 +51,9 @@ export class LoansService {
         }
         await this.bookRepository.save(book);
       } else {
-        return {
-          success: false,
-          code: 'UNAVAILABLE',
-          message: 'Livre déjà emprunté par un autre utilisateur',
-        };
+        throw new BadRequestException(
+          "Ce livre n'est pas disponible pour le moment — il a déjà été emprunté par un autre utilisateur.",
+        );
       }
       // creation de l'emprunt et enregistrement
       const loan = this.loanRepository.create({
@@ -63,39 +65,57 @@ export class LoansService {
       const addedLoan = await this.loanRepository.save(loan);
       return {
         success: true,
-        message: 'Emprunt cree avec success',
+        message: "L'emprunt a été créé avec succès.",
         data: addedLoan,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        return {
-          success: false,
-          code: error.name,
-          message: error.message,
-        };
-      }
-      return {
-        success: false,
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Une erreur interne est survenue',
-      };
+      return formatErrorResponse(error);
     }
   }
 
   async findAll() {
-    return {
-      success: true,
-      data: await this.loanRepository.find({ relations: ['book', 'user'] }),
-      message: 'Liste des emprunts',
-    };
+    try {
+      const allLoans = await this.loanRepository.find({
+        relations: ['book', 'user'],
+      });
+      return {
+        success: true,
+        data: allLoans,
+        message: 'Liste des emprunts',
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} loan`;
+  async findOne(id: number) {
+    try {
+      if (!isValidNumericId(id)) {
+        throw new BadRequestException('ID fourni invalide');
+      }
+      const loan = await this.loanRepository.findOne({
+        relations: ['book', 'user'],
+        where: { id },
+      });
+      if (!loan) {
+        throw new BadRequestException('Emprunt introuvable');
+      }
+      return {
+        success: true,
+        message: 'Emprunt trouve avec success',
+        data: loan,
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
   }
 
   async update(id: number, updateLoanDto: UpdateLoanDto) {
     try {
+      if (!isValidNumericId(id)) {
+        throw new BadRequestException('ID fourni invalide');
+      }
+
       const loan = await this.loanRepository.findOne({
         relations: ['book'],
         where: { id },
@@ -105,7 +125,6 @@ export class LoansService {
           ...updateLoanDto,
           returned: true,
         });
-        console.log(loan, loan.book);
         await this.bookRepository.update(loan.book.id, {
           available: true,
         });
@@ -118,30 +137,35 @@ export class LoansService {
           success: true,
         };
       } else {
-        throw new Error('Emprunt introuvable');
-        // return {
-        //   success: false,
-        //   code: 'NOT_FOUND',
-        //   message: 'Emprunt introuvable',
-        // };
+        throw new BadRequestException('Emprunt introuvable');
       }
     } catch (error) {
-      if (error instanceof Error) {
-        return {
-          success: false,
-          code: error.name,
-          message: error.message,
-        };
-      }
-      return {
-        success: false,
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Une erreur interne est survenue',
-      };
+      return formatErrorResponse(error);
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} loan`;
+  async remove(id: number) {
+    try {
+      if (!isValidNumericId(id)) {
+        throw new BadRequestException('ID fourni invalide');
+      }
+      const loan = await this.loanRepository.findOneBy({ id });
+      if (!loan) {
+        throw new BadRequestException('Emprunt introuvable');
+      }
+      if (loan.returned === false) {
+        throw new ConflictException(
+          "L'emprunt ne peut pas encore etre supprime car l'utilisateur n'a pas encore rendu le livre",
+        );
+      }
+      await this.loanRepository.delete(id);
+      return {
+        success: true,
+        message: 'Emprunt supprimé avec success',
+        data: loan,
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
   }
 }
