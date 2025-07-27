@@ -38,7 +38,7 @@ export class BooksService {
       const newBook = await this.bookRepository.save({
         ...createBookDto,
         available: true,
-        library: { id: library_id },
+        // library: { id: library_id },
       });
       return {
         success: true,
@@ -61,7 +61,12 @@ export class BooksService {
       if (available !== undefined) where.available = available;
 
       // Requête avec ou sans filtres
-      const books = await this.bookRepository.find({ where });
+      const books = await this.bookRepository.find({
+        where,
+        loadRelationIds: {
+          relations: ['library'],
+        },
+      });
 
       // Détermination du message
       let message = 'Liste des livres';
@@ -75,7 +80,16 @@ export class BooksService {
 
       return {
         success: true,
-        data: books,
+        data: books.map((book) => ({
+          id: book.id,
+          title: book.title,
+          author: book.author,
+          resume: book.resume,
+          genre: book.genre,
+          available: book.available,
+          created_at: book.created_at,
+          library_id: book.library,
+        })),
         message,
       };
     } catch (error) {
@@ -88,14 +102,29 @@ export class BooksService {
       if (!isValidNumericId(id)) {
         throw new Error('ID fourni invalide');
       }
-      const book = await this.bookRepository.findOne({ where: { id } });
+      const book = await this.bookRepository.findOne({
+        where: { id },
+        loadRelationIds: { relations: ['library'] },
+      });
       if (!book) {
         throw new Error('Livre introuvable');
       }
+
       return {
         success: true,
         message: 'Livre trouve avec success',
-        data: [book],
+        data: [
+          {
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            resume: book.resume,
+            genre: book.genre,
+            available: book.available,
+            created_at: book.created_at,
+            library_id: book.library,
+          },
+        ],
       };
     } catch (error) {
       return formatErrorResponse(error);

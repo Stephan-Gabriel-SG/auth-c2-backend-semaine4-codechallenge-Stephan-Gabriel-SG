@@ -4,9 +4,6 @@ export class BookDto {
   @ApiProperty({ required: true, example: 1 })
   id: number;
 
-  @ApiProperty({ required: true, example: 1 })
-  user_id: number;
-
   @ApiProperty({ required: true, example: 2 })
   library_id: number;
 
@@ -27,4 +24,10 @@ export class BookDto {
 
   @ApiProperty({ required: false, example: true })
   available: boolean;
+
+  @ApiProperty({
+    required: true,
+    example: '2022-01-01T00:00:00.000Z',
+  })
+  created_at: Date;
 }

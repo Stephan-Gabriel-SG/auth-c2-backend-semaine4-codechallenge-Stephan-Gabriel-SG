@@ -52,6 +52,23 @@ export class BooksController {
   }
 
   @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'Liste livre avec filtres',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(BookDto) },
+            },
+          },
+        },
+      ],
+    },
+  })
   @ApiOperation({ summary: 'Lister tous les livres avec filtres' })
   @ApiQuery({
     name: 'genre',
