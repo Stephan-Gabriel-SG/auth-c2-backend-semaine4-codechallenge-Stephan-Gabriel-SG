@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
 import { Repository } from 'typeorm';
 import { Library } from 'src/libraries/entities/library.entity';
 import { FilterBookDto } from './dto/filter-book.dto';
+import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
+import { isValidNumericId } from 'src/common/utils/id-validation';
 
 @Injectable()
 export class BooksService {
@@ -17,13 +22,18 @@ export class BooksService {
   async create(createBookDto: CreateBookDto) {
     const { library_id } = createBookDto;
     try {
+      if (!isValidNumericId(library_id)) {
+        throw new BadRequestException(
+          "L'id de la bibliothèque fourni invalide",
+        );
+      }
       const isLibraryExist = await this.libraryRepository.findOne({
         where: {
           id: library_id,
         },
       });
       if (!isLibraryExist) {
-        throw new Error("La bibliothèque n'existe pas");
+        throw new NotFoundException("La bibliothèque n'existe pas");
       }
       const newBook = await this.bookRepository.save({
         ...createBookDto,
@@ -36,71 +46,59 @@ export class BooksService {
         data: newBook,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        return {
-          success: false,
-          code: error.name,
-          message: error.message,
-        };
-      }
-      return {
-        success: false,
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Une erreur interne est survenue',
-      };
+      return formatErrorResponse(error);
     }
   }
 
   async findAll(filterBookDto: FilterBookDto = {}) {
-    const { genre, author, available } = filterBookDto;
+    try {
+      const { genre, author, available } = filterBookDto;
 
-    // Construction dynamique des filtres
-    const where: Record<string, any> = {};
-    if (genre) where.genre = genre;
-    if (author) where.author = author;
-    if (available !== undefined) where.available = available;
+      // Construction dynamique des filtres
+      const where: Record<string, any> = {};
+      if (genre) where.genre = genre;
+      if (author) where.author = author;
+      if (available !== undefined) where.available = available;
 
-    // Requête avec ou sans filtres
-    const books = await this.bookRepository.find({ where });
+      // Requête avec ou sans filtres
+      const books = await this.bookRepository.find({ where });
 
-    // Détermination du message
-    let message = 'Liste des livres';
-    if (books.length === 0) {
-      if (genre || author || available !== undefined) {
-        message = `Aucun livre trouvé pour les critères spécifiés`;
-      } else {
-        message = `Aucun livre trouvé dans la base`;
+      // Détermination du message
+      let message = 'Liste des livres';
+      if (books.length === 0) {
+        if (genre || author || available !== undefined) {
+          message = `Aucun livre trouvé pour les critères spécifiés`;
+        } else {
+          message = `Aucun livre trouvé dans la base`;
+        }
       }
-    }
 
-    return {
-      success: true,
-      data: books,
-      message,
-    };
+      return {
+        success: true,
+        data: books,
+        message,
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
   }
 
   async findOne(id: number) {
-    const book = await this.bookRepository.findOne({ where: { id } });
-    if (!book) {
+    try {
+      if (!isValidNumericId(id)) {
+        throw new Error('ID fourni invalide');
+      }
+      const book = await this.bookRepository.findOne({ where: { id } });
+      if (!book) {
+        throw new Error('Livre introuvable');
+      }
       return {
-        success: false,
-        code: 'NOT_FOUND',
-        message: 'Livre introuvable',
+        success: true,
+        message: 'Livre trouve avec success',
+        data: book,
       };
+    } catch (error) {
+      return formatErrorResponse(error);
     }
-    return {
-      success: true,
-      message: 'Livre trouve avec success',
-      data: book,
-    };
-  }
-
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} book`;
   }
 }

@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateBookDto {
   @ApiProperty({ required: true, example: 2 })
@@ -38,7 +32,6 @@ export class CreateBookDto {
 
   @ApiProperty({ required: false, example: true })
   @IsOptional()
-  // @IsBoolean()
   @Transform(({ value }) => {
     if (value == 'true' || value == '1') return true;
     if (value == 'false' || value == '0') return false;
