@@ -6,17 +6,6 @@ export class LoanDto {
     description: 'Identifiant du prêt',
   })
   id: number;
-  @ApiProperty({
-    example: 1,
-    description: 'Identifiant du livre à emprunter',
-  })
-  book_id: number;
-
-  @ApiProperty({
-    example: 2,
-    description: "Identifiant de l'utilisateur emprunteur",
-  })
-  user_id: number;
 
   @ApiProperty({
     example: '2025-07-26',
