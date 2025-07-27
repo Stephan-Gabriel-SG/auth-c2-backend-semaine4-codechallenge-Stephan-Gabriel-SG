@@ -176,3 +176,22 @@ npm run start:prod
 | `GET`    | `/loans/:id`        | Récupère les détails d'un emprunt     | Param: `id` (number)         |
 | `PATCH`  | `/loans/:id/return` | Marque un livre comme retourné        | Param: `id` (number)         |
 | `DELETE` | `/loans/:id`        | Supprime un emprunt (admin seulement) | Param: `id` (number)         |
+
+---
+
+## 👨💻 Auteur
+
+**Stéphan Gabriel NANDRASANTSOA**  
+Développeur Javascript & Typescript
+
+**Compétences clés** :  
+`NestJS` `TypeScript` `TypeORM` `MySQL` `API Design` `Swagger` `Architecture Logicielle`
+
+**Contribution** :  
+Développement de l'API complète avec :
+
+- Architecture modulaire
+- Documentation Swagger intégrée
+- Système de gestion de bibliothèque
+- Sécurité des données (BCrypt)
+- Validation des entrées
