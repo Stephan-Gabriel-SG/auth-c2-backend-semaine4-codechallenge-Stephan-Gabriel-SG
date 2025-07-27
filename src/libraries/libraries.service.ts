@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateLibraryDto } from './dto/create-library.dto';
-import { UpdateLibraryDto } from './dto/update-library.dto';
 import { Library } from './entities/library.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { isValidNumericId } from 'src/common/utils/id-validation';
+import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
 
 @Injectable()
 export class LibrariesService {
@@ -18,19 +23,24 @@ export class LibrariesService {
   async create(createLibraryDto: CreateLibraryDto) {
     try {
       const { user_id, name, location } = createLibraryDto;
+      if (!isValidNumericId(user_id)) {
+        throw new BadRequestException("ID de l'utilisateur fourni invalide");
+      }
       if (user_id) {
         const user = await this.libraryRepository.findOne({
           where: { user: { id: Number(user_id) } },
         });
 
         if (user) {
-          throw new Error('Utilisateur a deja un bibliotheque');
+          throw new BadRequestException(
+            'Utilisateur déjà associer à une bibliotheque',
+          );
         }
         const userExists = await this.userRepository.findOne({
           where: { id: Number(user_id) },
         });
         if (!userExists) {
-          throw new Error('Utilisateur introuvable');
+          throw new NotFoundException('Utilisateur introuvable');
         }
       }
       const library = this.libraryRepository.create({
@@ -45,50 +55,40 @@ export class LibrariesService {
         data: library,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        return {
-          code: error.name,
-          message: error.message,
-          success: false,
-        };
-      }
-      return {
-        success: false,
-        code: 'SERVER_ERROR',
-        message: 'Une erreur est survenue lors de la creation du bibliotheque',
-      };
+      return formatErrorResponse(error);
     }
   }
 
   async findAll() {
-    return {
-      success: true,
-      data: await this.libraryRepository.find(),
-      message: 'Liste des bibliotheques',
-    };
+    try {
+      const allLibraries = await this.libraryRepository.find();
+      return {
+        success: true,
+        data: allLibraries,
+        message: 'Liste des bibliotheques',
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
   }
 
   async findOne(id: number) {
-    if (id) {
+    try {
+      if (!isValidNumericId(id)) {
+        throw new BadRequestException('ID fourni invalide');
+      }
+
       const library = await this.libraryRepository.findOneBy({ id });
+
+      if (!library) throw new NotFoundException('Bibliotheque introuvable');
+
       return {
         success: true,
         message: 'Bibliotheque trouve avec success',
         data: library,
       };
+    } catch (error) {
+      return formatErrorResponse(error);
     }
-    return {
-      success: false,
-      code: 'NOT_FOUND',
-      message: 'Bibliotheque introuvable',
-    };
-  }
-
-  update(id: number, updateLibraryDto: UpdateLibraryDto) {
-    return `This action updates a #${id} library`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} library`;
   }
 }
