@@ -21,9 +21,21 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-# Mini Bibliothèque API — Projet Backend NestJS
+#
 
-Cette API permet la gestion d'une bibliothèque numérique : utilisateurs, livres, emprunts et bibliothèques physiques. Elle est conçue avec NestJS en suivant une architecture modulaire et évolutive.
+# 📚 API REST - Gestion de bibliothèques locales
+
+Cette API RESTful permet la gestion d’un système de bibliothèques locales interconnectées, développé avec NestJS selon une architecture modulaire et évolutive.
+
+## Fonctionnalités principales
+
+- Gestion des utilisateurs : chaque utilisateur possède sa propre bibliothèque personnelle
+
+- Bibliothèques personnalisées : chaque bibliothèque regroupe des livres que l’utilisateur gère
+
+- Emprunts partagés : les utilisateurs peuvent consulter et emprunter des livres d’autres bibliothèques
+
+- Catalogue de livres : ajout et consultation
 
 ## Structure du Projet Bibliothèque API
 
@@ -51,8 +63,6 @@ Cette API permet la gestion d'une bibliothèque numérique : utilisateurs, livre
 | **Bcrypt**  | Librairie pour hacher et sécuriser les mots de passe des utilisateurs                          |
 | **Swagger** | Module NestJS pour générer automatiquement la documentation API interactive et professionnelle |
 
-## Installation
-
 ## 🛠 Installation et Configuration
 
 ### Prérequis
@@ -74,7 +84,7 @@ cd c2-backend-semaine3-codechallenge-Stephan-Gabriel-SG
 npm install
 ```
 
-## Configuration de la base de données
+### 2. Configuration de la base de données
 
 1. Initialiser la base MySQL
 
@@ -89,8 +99,8 @@ source configs/init_db.sql
 2. Configurer les variables d'environnement
 
 ```shell
-# Copier le template .env
-cp .env.example .env
+  # Copier le template .env
+  cp .env.example .env
 ```
 
 Editez ensuite le fichier .env avec vos paramètres :
@@ -116,17 +126,17 @@ npm run start:prod
 
 ## Documentation des Endpoints
 
-### URL principale de l’API
+### 1. URL principale de l’API
 
 > L'API fonctionne par défaut à l'adresse suivante :
 > [http://localhost:3000](http://localhost:3000)
 
-### Interface Swagger UI
+### 2. Interface Swagger UI
 
 > La documentation interactive est disponible via Swagger à :
 > [http://localhost:3000/api](http://localhost:3000/api)
 
-### Utilisateurs (`/users`)
+### 3. Utilisateurs (`/users`)
 
 | Méthode | Endpoint           | Description                                                 | Paramètres                        |
 | ------- | ------------------ | ----------------------------------------------------------- | --------------------------------- |
@@ -137,27 +147,27 @@ npm run start:prod
 
 ---
 
-### Livres (`/books`)
+### 4. Livres (`/books`)
 
-| Méthode | Endpoint     | Description                     | Paramètres                                         |
-| ------- | ------------ | ------------------------------- | -------------------------------------------------- |
-| `POST`  | `/books`     | Ajoute un nouveau livre         | Body: `{ user_id,title, author, genre, [resume] }` |
-| `GET`   | `/books`     | Liste les livres (filtrable)    | Query: `?author=X&genre=Y&available=true`          |
-| `GET`   | `/books/:id` | Récupère les détails d'un livre | Param: `id` (number)                               |
+| Méthode | Endpoint     | Description                     | Paramètres                                          |
+| ------- | ------------ | ------------------------------- | --------------------------------------------------- |
+| `POST`  | `/books`     | Ajoute un nouveau livre         | Body: `{ user_id, title, author, genre, [resume] }` |
+| `GET`   | `/books`     | Liste les livres (filtrable)    | Query: `?author=X&genre=Y&available=true`           |
+| `GET`   | `/books/:id` | Récupère les détails d'un livre | Param: `id` (number)                                |
 
 ---
 
-### Bibliothèques (`/libraries`)
+### 5. Bibliothèques (`/libraries`)
 
 | Méthode | Endpoint         | Description                             | Paramètres                          |
 | ------- | ---------------- | --------------------------------------- | ----------------------------------- |
-| `POST`  | `/libraries`     | Crée une nouvelle bibliothèque          | Body: `{ user_id ,name, location }` |
+| `POST`  | `/libraries`     | Crée une nouvelle bibliothèque          | Body: `{ user_id, name, location }` |
 | `GET`   | `/libraries`     | Liste toutes les bibliothèques          | -                                   |
 | `GET`   | `/libraries/:id` | Récupère les détails d'une bibliothèque | Param: `id` (number)                |
 
 ---
 
-### Emprunts (`/loans`)
+### 6. Emprunts (`/loans`)
 
 | Méthode  | Endpoint            | Description                           | Paramètres                   |
 | -------- | ------------------- | ------------------------------------- | ---------------------------- |
