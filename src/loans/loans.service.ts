@@ -66,7 +66,7 @@ export class LoansService {
       return {
         success: true,
         message: "L'emprunt a été créé avec succès.",
-        data: addedLoan,
+        data: [addedLoan],
       };
     } catch (error) {
       return formatErrorResponse(error);
@@ -103,7 +103,7 @@ export class LoansService {
       return {
         success: true,
         message: 'Emprunt trouve avec success',
-        data: loan,
+        data: [loan],
       };
     } catch (error) {
       return formatErrorResponse(error);
@@ -133,7 +133,7 @@ export class LoansService {
 
         return {
           message: 'Emprunt mis à jour avec succès',
-          data: updatedLoan,
+          data: [updatedLoan],
           success: true,
         };
       } else {
@@ -162,7 +162,7 @@ export class LoansService {
       return {
         success: true,
         message: 'Emprunt supprimé avec success',
-        data: loan,
+        data: [loan],
       };
     } catch (error) {
       return formatErrorResponse(error);

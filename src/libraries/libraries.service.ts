@@ -52,7 +52,7 @@ export class LibrariesService {
       return {
         success: true,
         message: 'Bibliotheque créer avec success',
-        data: library,
+        data: [library],
       };
     } catch (error) {
       return formatErrorResponse(error);
@@ -85,7 +85,7 @@ export class LibrariesService {
       return {
         success: true,
         message: 'Bibliotheque trouve avec success',
-        data: library,
+        data: [library],
       };
     } catch (error) {
       return formatErrorResponse(error);

@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 export class UserDto {
+  @ApiProperty({ required: true, example: 1 })
+  id: number;
+
   @ApiProperty({
     required: true,
     description: 'Le nom doit avoir au moins 3 caractères',

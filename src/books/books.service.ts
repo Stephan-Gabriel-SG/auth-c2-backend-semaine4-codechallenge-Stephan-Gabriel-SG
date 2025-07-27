@@ -43,7 +43,7 @@ export class BooksService {
       return {
         success: true,
         message: 'Livre ajouter avec success',
-        data: newBook,
+        data: [newBook],
       };
     } catch (error) {
       return formatErrorResponse(error);
@@ -95,7 +95,7 @@ export class BooksService {
       return {
         success: true,
         message: 'Livre trouve avec success',
-        data: book,
+        data: [book],
       };
     } catch (error) {
       return formatErrorResponse(error);

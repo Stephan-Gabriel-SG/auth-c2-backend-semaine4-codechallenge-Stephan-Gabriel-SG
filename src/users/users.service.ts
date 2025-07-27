@@ -37,7 +37,13 @@ export class UsersService {
       await this.usersRepository.save(user);
       return {
         success: true,
-        data: user,
+        data: [
+          {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+          },
+        ],
         message: 'Utilisateur cree avec success',
       };
     } catch (error) {
@@ -74,7 +80,7 @@ export class UsersService {
       return {
         success: true,
         message: 'Utilisateur trouve avec success',
-        data: user,
+        data: [user],
       };
     } catch (error) {
       return formatErrorResponse(error);

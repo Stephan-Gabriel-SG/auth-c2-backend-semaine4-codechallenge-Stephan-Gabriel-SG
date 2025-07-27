@@ -34,7 +34,7 @@ export class UsersController {
           properties: {
             data: {
               type: 'array',
-              items: { $ref: getSchemaPath(CreateUserDto) },
+              items: { $ref: getSchemaPath(UserDto) },
             },
           },
         },
