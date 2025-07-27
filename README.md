@@ -141,11 +141,11 @@ npm run start:prod
 
 ### Livres (`/books`)
 
-| Méthode | Endpoint     | Description                     | Paramètres                                |
-| ------- | ------------ | ------------------------------- | ----------------------------------------- |
-| `POST`  | `/books`     | Ajoute un nouveau livre         | Body: `{ title, author, genre }`          |
-| `GET`   | `/books`     | Liste les livres (filtrable)    | Query: `?author=X&genre=Y&available=true` |
-| `GET`   | `/books/:id` | Récupère les détails d'un livre | Param: `id` (number)                      |
+| Méthode | Endpoint     | Description                     | Paramètres                                         |
+| ------- | ------------ | ------------------------------- | -------------------------------------------------- |
+| `POST`  | `/books`     | Ajoute un nouveau livre         | Body: `{ user_id,title, author, genre, [resume] }` |
+| `GET`   | `/books`     | Liste les livres (filtrable)    | Query: `?author=X&genre=Y&available=true`          |
+| `GET`   | `/books/:id` | Récupère les détails d'un livre | Param: `id` (number)                               |
 
 ---
 
