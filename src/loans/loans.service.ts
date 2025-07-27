@@ -172,11 +172,31 @@ export class LoansService {
           available: true,
         });
 
-        const updatedLoan = await this.loanRepository.findOneBy({ id });
-
+        const updatedLoan = await this.loanRepository.findOne({
+          where: { id },
+          relations: ['book', 'user'],
+        });
+        if (!updatedLoan) {
+          throw new BadRequestException('Emprunt non mise à jour');
+        }
         return {
           message: 'Emprunt mis à jour avec succès',
-          data: [updatedLoan],
+          data: [
+            {
+              id: updatedLoan.id,
+              start_date: updatedLoan.start_date,
+              end_date: updatedLoan.end_date,
+              returned: updatedLoan.returned,
+              user: {
+                id: updatedLoan.user.id,
+                name: updatedLoan.user.name,
+              },
+              book: {
+                id: updatedLoan.book.id,
+                title: updatedLoan.book.title,
+              },
+            },
+          ],
           success: true,
         };
       } else {

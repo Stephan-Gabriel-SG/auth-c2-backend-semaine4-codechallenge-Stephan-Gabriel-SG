@@ -20,7 +20,6 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
-import { Loan } from './entities/loan.entity';
 import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
 import { LoanDto } from './dto/loan.dto';
 
@@ -64,7 +63,19 @@ export class LoansController {
   @ApiResponse({
     status: 200,
     description: 'Liste récupérée avec succès',
-    type: SuccessResponseDto<Loan[]>,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(SuccessResponseDto) },
+        {
+          properties: {
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(LoanDto) },
+            },
+          },
+        },
+      ],
+    },
   })
   findAll() {
     return this.loansService.findAll();
