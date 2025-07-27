@@ -24,7 +24,7 @@ export class User {
   email: string;
 
   @ApiProperty({ required: true, example: 'password123' })
-  @Column()
+  @Column({ select: false })
   password_hash: string;
 
   @ApiProperty({ required: false, example: '2022-01-01T00:00:00.000Z' })

@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
+import { isValidNumericId } from 'src/common/utils/id-validation';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +26,7 @@ export class UsersService {
       });
 
       if (userExists) {
-        throw new Error('Utilisateur deja existant');
+        throw new BadRequestException('Utilisateur deja existant');
       }
       const password_hash = await bcrypt.hash(password, 10);
       const user = this.usersRepository.create({
@@ -36,39 +41,44 @@ export class UsersService {
         message: 'Utilisateur cree avec success',
       };
     } catch (error) {
-      if (error instanceof Error) {
-        return {
-          code: error.name,
-          message: error.message,
-          success: false,
-        };
-      }
-      return {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: "Une erreur est survenue lors de la creation de l'utilisateur",
-        success: false,
-      };
+      return formatErrorResponse(error);
     }
   }
 
-  findAll() {
-    return this.usersRepository.find();
+  async findAll() {
+    try {
+      const allUsers = await this.usersRepository.find();
+      return {
+        success: true,
+        data: allUsers,
+        message: 'Liste des utilisateurs',
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
   }
 
   async findOne(id: number) {
-    if (id) {
+    try {
+      if (!isValidNumericId(id)) {
+        console.log('bad request - invalid numeric id');
+        throw new BadRequestException('ID fourni invalide');
+      }
+
       const user = await this.usersRepository.findOneBy({ id });
+
+      if (!user) {
+        throw new NotFoundException('Utilisateur introuvable');
+      }
+
       return {
         success: true,
         message: 'Utilisateur trouve avec success',
         data: user,
       };
+    } catch (error) {
+      return formatErrorResponse(error);
     }
-    return {
-      success: false,
-      code: 'NOT_FOUND',
-      message: 'Utilisateur introuvable',
-    };
   }
 
   async findLoans(id: number) {
@@ -84,32 +94,10 @@ export class UsersService {
           data: user.loans,
         };
       } else {
-        return {
-          success: false,
-          code: 'NOT_FOUND',
-          message: 'Utilisateur introuvable',
-        };
+        throw new NotFoundException('Utilisateur introuvable');
       }
     } catch (error) {
-      if (error instanceof Error) {
-        return {
-          code: error.name,
-          message: error.message,
-          success: false,
-        };
-      }
-      return {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: "Une erreur est survenue lors de la creation de l'utilisateur",
-        success: false,
-      };
+      return formatErrorResponse(error);
     }
-  }
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }
