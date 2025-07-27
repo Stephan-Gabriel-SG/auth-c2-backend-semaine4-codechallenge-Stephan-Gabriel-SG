@@ -25,17 +25,17 @@
 
 # 📚 API REST - Gestion de bibliothèques locales
 
-Cette API RESTful permet la gestion d’un système de bibliothèques locales interconnectées, développé avec NestJS selon une architecture modulaire et évolutive.
+Cette **API RESTful** permet la gestion d’un système de bibliothèques locales interconnectées, développé avec NestJS selon une architecture modulaire et évolutive.
 
 ## Fonctionnalités principales
 
-- Gestion des utilisateurs : chaque utilisateur possède sa propre bibliothèque personnelle
+- **Gestion des utilisateurs** : chaque utilisateur possède sa propre bibliothèque personnelle
 
-- Bibliothèques personnalisées : chaque bibliothèque regroupe des livres que l’utilisateur gère
+- **Bibliothèques personnalisées** : chaque bibliothèque regroupe des livres que l’utilisateur gère
 
-- Emprunts partagés : les utilisateurs peuvent consulter et emprunter des livres d’autres bibliothèques
+- **Emprunts partagés** : les utilisateurs peuvent consulter et emprunter des livres d’autres bibliothèques
 
-- Catalogue de livres : ajout et consultation
+- **Catalogue de livres** : ajout et consultation
 
 ## Structure du Projet Bibliothèque API
 
@@ -67,9 +67,9 @@ Cette API RESTful permet la gestion d’un système de bibliothèques locales in
 
 ### Prérequis
 
-- Node.js (v18 ou supérieur)
-- MySQL (v8 ou supérieur)
-- Git
+- **Node.js** (v18 ou supérieur)
+- **MySQL** (v8 ou supérieur)
+- **Git**
 
 ### 1. Installation du projet
 
