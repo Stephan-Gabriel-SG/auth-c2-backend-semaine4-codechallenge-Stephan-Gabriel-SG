@@ -112,8 +112,6 @@ npm run start:dev
 # Ou en mode production
 npm run build
 npm run start:prod
-### Étapes à suivre :
-
 ```
 
 ## Documentation des Endpoints
