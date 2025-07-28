@@ -8,8 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
-import { isValidNumericId } from 'src/common/utils/id-validation';
+import { formatErrorResponse } from 'common/exceptions/format-error-response.helpers';
+import { isValidNumericId } from 'common/utils/id-validation';
 
 @Injectable()
 export class UsersService {

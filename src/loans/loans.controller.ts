@@ -19,8 +19,8 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
-import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
+import { SuccessResponseDto } from 'common/dto/api-response.dto';
+import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { LoanDto } from './dto/loan.dto';
 
 @ApiTags('Loans')

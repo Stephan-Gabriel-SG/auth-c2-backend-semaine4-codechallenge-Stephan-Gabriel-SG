@@ -9,8 +9,8 @@ import { Book } from './entities/book.entity';
 import { Repository } from 'typeorm';
 import { Library } from 'src/libraries/entities/library.entity';
 import { FilterBookDto } from './dto/filter-book.dto';
-import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
-import { isValidNumericId } from 'src/common/utils/id-validation';
+import { formatErrorResponse } from 'common/exceptions/format-error-response.helpers';
+import { isValidNumericId } from 'common/utils/id-validation';
 
 @Injectable()
 export class BooksService {

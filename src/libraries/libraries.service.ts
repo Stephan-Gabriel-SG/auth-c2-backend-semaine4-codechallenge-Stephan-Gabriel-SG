@@ -8,8 +8,8 @@ import { Library } from './entities/library.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { isValidNumericId } from 'src/common/utils/id-validation';
-import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
+import { isValidNumericId } from 'common/utils/id-validation';
+import { formatErrorResponse } from 'common/exceptions/format-error-response.helpers';
 
 @Injectable()
 export class LibrariesService {

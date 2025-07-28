@@ -10,8 +10,8 @@ import { Loan } from './entities/loan.entity';
 import { Book } from 'src/books/entities/book.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { isValidNumericId } from 'src/common/utils/id-validation';
-import { formatErrorResponse } from 'src/common/exceptions/format-error-response.helpers';
+import { isValidNumericId } from 'common/utils/id-validation';
+import { formatErrorResponse } from 'common/exceptions/format-error-response.helpers';
 
 @Injectable()
 export class LoansService {
@@ -79,6 +79,7 @@ export class LoansService {
             book: {
               id: addedLoan.book.id,
               title: addedLoan.book.title,
+              available: addedLoan.book.available,
             },
           },
         ],
@@ -107,6 +108,7 @@ export class LoansService {
           book: {
             id: loan.book.id,
             title: loan.book.title,
+            available: loan.book.available,
           },
         })),
         message: 'Liste des emprunts',
@@ -144,6 +146,7 @@ export class LoansService {
             book: {
               id: loan.book.id,
               title: loan.book.title,
+              available: loan.book.available,
             },
           },
         ],
@@ -194,6 +197,7 @@ export class LoansService {
               book: {
                 id: updatedLoan.book.id,
                 title: updatedLoan.book.title,
+                available: updatedLoan.book.available,
               },
             },
           ],
@@ -238,6 +242,7 @@ export class LoansService {
             book: {
               id: loan.book.id,
               title: loan.book.title,
+              available: loan.book.available,
             },
           },
         ],

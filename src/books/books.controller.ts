@@ -11,8 +11,8 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { FilterBookDto } from './dto/filter-book.dto';
-import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
-import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
+import { SuccessResponseDto } from 'common/dto/api-response.dto';
+import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { BookDto } from './dto/book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
 

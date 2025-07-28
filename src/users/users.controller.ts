@@ -11,8 +11,8 @@ import {
   ApiResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
-import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
+import { SuccessResponseDto } from 'common/dto/api-response.dto';
+import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { CreateBookDto } from 'src/books/dto/create-book.dto';
 import { UserDto } from './dto/user.dto';
 import { LoanDto } from 'src/loans/dto/loan.dto';

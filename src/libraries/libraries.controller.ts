@@ -11,9 +11,9 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { SuccessResponseDto } from 'src/common/dto/api-response.dto';
+import { SuccessResponseDto } from 'common/dto/api-response.dto';
 import { Library } from './entities/library.entity';
-import { ErrorResponseDto } from 'src/common/dto/api-error.dto';
+import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { LibraryDto } from './dto/library.dto';
 
 @ApiTags('Libraries')

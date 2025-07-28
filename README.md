@@ -179,7 +179,7 @@ npm run start:prod
 
 ---
 
-## 👨💻 Auteur
+## Auteur
 
 **Stéphan Gabriel NANDRASANTSOA**  
 Développeur Javascript & Typescript
