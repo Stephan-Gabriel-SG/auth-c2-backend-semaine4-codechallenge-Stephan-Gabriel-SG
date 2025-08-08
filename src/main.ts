@@ -13,6 +13,16 @@ async function bootstrap() {
       `Cette API permet de gérer une bibliothèque virtuelle : livres, utilisateurs, emprunts, bibliothèques et disponibilité des ouvrages.`,
     )
     .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+        description: 'Veuillez saisir votre token JWT',
+      },
+      'access-token',
+    )
     .addServer('http://localhost:3000', 'Serveur local de développement')
     .addTag('Users', 'Gestion des utilisateurs')
     .addTag('Books', 'Catalogue des livres et filtres')

@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { LoansService } from './loans.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiExtraModels,
   ApiOperation,
@@ -22,13 +24,19 @@ import {
 import { SuccessResponseDto } from 'common/dto/api-response.dto';
 import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { LoanDto } from './dto/loan.dto';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @ApiTags('Loans')
 @Controller('loans')
+@UseGuards(JwtGuard, RolesGuard)
 export class LoansController {
   constructor(private readonly loansService: LoansService) {}
 
   @Post()
+  @Roles('admin', 'user')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Créer un prêt' })
   @ApiBody({ type: CreateLoanDto })
   @ApiExtraModels(SuccessResponseDto, LoanDto)
@@ -59,6 +67,8 @@ export class LoansController {
   }
 
   @Get()
+  @Roles('admin')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Liste des prêts enregistrés' })
   @ApiResponse({
     status: 200,
@@ -82,6 +92,8 @@ export class LoansController {
   }
 
   @Get(':id')
+  @Roles('admin')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Récupérer un prêt par ID' })
   @ApiParam({
     name: 'id',
@@ -116,6 +128,8 @@ export class LoansController {
   }
 
   @Patch(':id/return')
+  @Roles('admin', 'user')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Mettre à jour un prêt (retour)' })
   @ApiParam({
     name: 'id',
@@ -151,6 +165,8 @@ export class LoansController {
   }
 
   @Delete(':id')
+  @Roles('admin')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Supprimer un prêt par ID' })
   @ApiParam({
     name: 'id',
