@@ -9,6 +9,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+export enum Role {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
 @Entity('users')
 export class User {
   @ApiProperty({ required: false, example: 1 })
@@ -36,4 +41,7 @@ export class User {
 
   @OneToMany(() => Loan, (loan) => loan.user)
   loans: Loan[];
+
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  role: Role;
 }

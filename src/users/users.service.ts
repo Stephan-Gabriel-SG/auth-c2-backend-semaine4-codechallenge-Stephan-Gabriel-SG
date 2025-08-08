@@ -20,7 +20,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const { name, email, password } = createUserDto;
+      const { name, email, password, role } = createUserDto;
       const userExists = await this.usersRepository.findOne({
         where: { email },
       });
@@ -34,6 +34,11 @@ export class UsersService {
         email,
         password_hash,
       });
+
+      if (role) {
+        user.role = role;
+      }
+
       await this.usersRepository.save(user);
       return {
         success: true,
@@ -42,6 +47,7 @@ export class UsersService {
             id: user.id,
             name: user.name,
             email: user.email,
+            role: user.role,
             created_at: user.created_at,
           },
         ],
@@ -68,7 +74,7 @@ export class UsersService {
   async findOneByEmail(email: string) {
     const user = await this.usersRepository.findOne({
       where: { email },
-      select: ['id', 'name', 'email', 'password_hash', 'created_at'],
+      select: ['id', 'name', 'role', 'email', 'password_hash', 'created_at'],
     });
     return user;
   }

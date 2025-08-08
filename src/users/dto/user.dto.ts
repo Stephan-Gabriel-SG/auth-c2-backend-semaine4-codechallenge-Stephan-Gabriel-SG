@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from '../entities/user.entity';
 export class UserDto {
   @ApiProperty({ required: true, example: 1 })
   id: number;
@@ -16,6 +17,14 @@ export class UserDto {
     example: 'john@example.com',
   })
   email: string;
+
+  @ApiProperty({
+    required: true,
+    description:
+      "Le rôle de l'utilisateur est facultatif. Valeur par defaut user",
+    example: 'user',
+  })
+  role: Role;
 
   @ApiProperty({
     required: true,

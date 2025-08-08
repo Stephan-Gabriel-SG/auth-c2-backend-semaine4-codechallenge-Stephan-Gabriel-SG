@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
+import { Role } from '../entities/user.entity';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -28,4 +29,13 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Le mot de passe est obligatoire' })
   @MinLength(6, { message: 'Le mot de passe doit avoir au moins 6 caractères' })
   password: string;
+
+  @ApiProperty({
+    required: false,
+    description:
+      "Le rôle de l'utilisateur est facultatif. Valeur par defaut user",
+    example: Role.USER,
+  })
+  @IsOptional()
+  role: Role;
 }
