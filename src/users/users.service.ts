@@ -65,6 +65,14 @@ export class UsersService {
     }
   }
 
+  async findOneByEmail(email: string) {
+    const user = await this.usersRepository.findOne({
+      where: { email },
+      select: ['id', 'name', 'email', 'password_hash', 'created_at'],
+    });
+    return user;
+  }
+
   async findOne(id: number) {
     try {
       if (!isValidNumericId(id)) {

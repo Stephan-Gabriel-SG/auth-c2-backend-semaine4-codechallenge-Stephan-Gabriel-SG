@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
@@ -16,6 +16,7 @@ import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { CreateBookDto } from 'src/books/dto/create-book.dto';
 import { UserDto } from './dto/user.dto';
 import { LoanDto } from 'src/loans/dto/loan.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -67,6 +68,7 @@ export class UsersController {
       ],
     },
   })
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiOperation({ summary: 'Lister tous les utilisateurs' })
   @ApiInternalServerErrorResponse({

@@ -6,10 +6,13 @@ import { LibrariesModule } from './libraries/libraries.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -24,6 +27,7 @@ import { ConfigModule } from '@nestjs/config';
     LibrariesModule,
     BooksModule,
     LoansModule,
+    AuthModule,
   ],
 })
 export class AppModule {
