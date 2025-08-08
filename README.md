@@ -18,6 +18,7 @@ Cette **API RESTful** permet la gestion d’un système de bibliothèques locale
 ├── configs/          # Fichiers de configuration (init sql DB)
 ├── common/           # Utilitaires partagés
 ├── src/              # Code source principal
+│ ├── auth/           # Module des authentifications
 │ ├── books/          # Module des livres
 │ ├── libraries/      # Module des bibliothèques
 │ ├── loans/          # Module des emprunts
@@ -30,13 +31,15 @@ Cette **API RESTful** permet la gestion d’un système de bibliothèques locale
 
 ## Technologie Description
 
-| Technologie | Description                                                                                    |
-| ----------- | ---------------------------------------------------------------------------------------------- |
-| **NestJS**  | Framework Node.js basé sur Express avec une structure modulaire et orientée services           |
-| **TypeORM** | ORM pour gérer les entités et relations dans la base de données MySQL                          |
-| **MySQL**   | Base de données relationnelle utilisée pour stocker les utilisateurs, livres, emprunts, etc.   |
-| **Bcrypt**  | Librairie pour hacher et sécuriser les mots de passe des utilisateurs                          |
-| **Swagger** | Module NestJS pour générer automatiquement la documentation API interactive et professionnelle |
+| Technologie               | Description                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------- |
+| **NestJS**                | Framework Node.js basé sur Express avec une structure modulaire et orientée services              |
+| **TypeORM**               | ORM pour gérer les entités et relations dans la base de données MySQL                             |
+| **MySQL**                 | Base de données relationnelle utilisée pour stocker les utilisateurs, livres, emprunts, etc.      |
+| **Bcrypt**                | Librairie pour hacher et sécuriser les mots de passe des utilisateurs                             |
+| **Swagger**               | Module NestJS pour générer automatiquement la documentation API interactive et professionnelle    |
+| **Passport.js**           | Middleware d'authentification pour Node.js, utilisé pour la stratégie de connexion locale et JWT. |
+| **JWT (JSON Web Tokens)** | Standard de l'industrie pour créer des tokens d'accès sécurisés après l'authentification.         |
 
 ## 🛠 Installation et Configuration
 
@@ -50,7 +53,7 @@ Cette **API RESTful** permet la gestion d’un système de bibliothèques locale
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/usdscommunity/c2-backend-semaine3-codechallenge-Stephan-Gabriel-SG.git
+git clone https://github.com/Stephan-Gabriel-SG/auth-c2-backend-semaine4-codechallenge-Stephan-Gabriel-SG.git
 
 # Se déplacer dans le dossier
 cd c2-backend-semaine3-codechallenge-Stephan-Gabriel-SG
@@ -90,6 +93,8 @@ DB_PORT=3306
 DB_NAME=mini_library  # Doit correspondre au nom dans init_db.sql
 DB_USER=root          # Ou un utilisateur dédié
 DB_PSWD=votre_mot_de_passe
+
+JWT_SECRET=votre_jwt_secret
 ```
 
 3. Lancement de l'application
@@ -115,46 +120,61 @@ npm run start:prod
 > La documentation interactive est disponible via Swagger à :
 > [http://localhost:3000/api](http://localhost:3000/api)
 
-### 3. Utilisateurs (`/users`)
+### 3. Auth (`/auth`)
 
-| Méthode | Endpoint           | Description                                                 | Paramètres                        |
-| ------- | ------------------ | ----------------------------------------------------------- | --------------------------------- |
-| `POST`  | `/users`           | Crée un nouvel utilisateur (mot de passe hashé avec Bcrypt) | Body: `{ name, email, password }` |
-| `GET`   | `/users`           | Liste tous les utilisateurs                                 | -                                 |
-| `GET`   | `/users/:id`       | Récupère un utilisateur spécifique                          | Param: `id` (number)              |
-| `GET`   | `/users/:id/loans` | Liste les emprunts d'un utilisateur                         | Param: `id` (number)              |
+| Méthode | Endpoint       | Description                                                 | Accès  | Paramètres                        |
+| ------- | -------------- | ----------------------------------------------------------- | ------ | --------------------------------- |
+| `POST`  | `/auth/login`  | Connecte un utilisateur et retourne un token JWT d'accès    | Public | Body: `{ email, password }`       |
+| `POST`  | `/auth/signup` | Crée un nouvel utilisateur (mot de passe hashé avec Bcrypt) | Public | Body: `{ name, email, password }` |
 
----
+### 4. Utilisateurs (`/users`)
 
-### 4. Livres (`/books`)
-
-| Méthode | Endpoint     | Description                     | Paramètres                                          |
-| ------- | ------------ | ------------------------------- | --------------------------------------------------- |
-| `POST`  | `/books`     | Ajoute un nouveau livre         | Body: `{ user_id, title, author, genre, [resume] }` |
-| `GET`   | `/books`     | Liste les livres (filtrable)    | Query: `?author=X&genre=Y&available=true`           |
-| `GET`   | `/books/:id` | Récupère les détails d'un livre | Param: `id` (number)                                |
+| Méthode | Endpoint           | Description                                                 | Accès           | Paramètres                        |
+| ------- | ------------------ | ----------------------------------------------------------- | --------------- | --------------------------------- |
+| `POST`  | `/users`           | Crée un nouvel utilisateur (mot de passe hashé avec Bcrypt) | Public          | Body: `{ name, email, password }` |
+| `GET`   | `/users`           | Liste tous les utilisateurs                                 | Admin seulement | -                                 |
+| `GET`   | `/users/:id`       | Récupère un utilisateur spécifique                          | Admin seulement | Param: `id` (number)              |
+| `GET`   | `/users/myloans`   | Liste des emprunts de l'utilisateur connecté                | user seulement  | -                                 |
+| `GET`   | `/users/:id/loans` | Liste les emprunts d'un utilisateur                         | Admin seulement | Param: `id` (number)              |
 
 ---
 
-### 5. Bibliothèques (`/libraries`)
+Méthode Endpoint Description Accès Paramètres
+POST /users Crée un nouvel utilisateur. Public Body: { name, email, password }
+GET /users Liste tous les utilisateurs Admin seulement -
+GET /users/:id Récupère un utilisateur spécifique Admin seulement Param: id (number)
+GET /users/myloans Liste les emprunts de l'utilisateur connecté Utilisateur (Admin inclus) -
+GET /users/:id/loans Liste les emprunts d'un utilisateur Admin seulement
 
-| Méthode | Endpoint         | Description                             | Paramètres                          |
-| ------- | ---------------- | --------------------------------------- | ----------------------------------- |
-| `POST`  | `/libraries`     | Crée une nouvelle bibliothèque          | Body: `{ user_id, name, location }` |
-| `GET`   | `/libraries`     | Liste toutes les bibliothèques          | -                                   |
-| `GET`   | `/libraries/:id` | Récupère les détails d'une bibliothèque | Param: `id` (number)                |
+### 5. Livres (`/books`)
+
+| Méthode | Endpoint     | Description                     | Accès              | Paramètres                                          |
+| ------- | ------------ | ------------------------------- | ------------------ | --------------------------------------------------- |
+| `POST`  | `/books`     | Ajoute un nouveau livre         | Admin, Utilisateur | Body: `{ user_id, title, author, genre, [resume] }` |
+| `GET`   | `/books`     | Liste les livres (filtrable)    | Public             | Query: `?author=X&genre=Y&available=true`           |
+| `GET`   | `/books/:id` | Récupère les détails d'un livre | Public             | Param: `id` (number)                                |
 
 ---
 
-### 6. Emprunts (`/loans`)
+### 6. Bibliothèques (`/libraries`)
 
-| Méthode  | Endpoint            | Description                           | Paramètres                   |
-| -------- | ------------------- | ------------------------------------- | ---------------------------- |
-| `POST`   | `/loans`            | Crée un nouvel emprunt                | Body: `{ user_id, book_id }` |
-| `GET`    | `/loans`            | Liste tous les emprunts               | -                            |
-| `GET`    | `/loans/:id`        | Récupère les détails d'un emprunt     | Param: `id` (number)         |
-| `PATCH`  | `/loans/:id/return` | Marque un livre comme retourné        | Param: `id` (number)         |
-| `DELETE` | `/loans/:id`        | Supprime un emprunt (admin seulement) | Param: `id` (number)         |
+| Méthode | Endpoint         | Description                             | Accès              | Paramètres                          |
+| ------- | ---------------- | --------------------------------------- | ------------------ | ----------------------------------- |
+| `POST`  | `/libraries`     | Crée une nouvelle bibliothèque          | Admin, Utilisateur | Body: `{ user_id, name, location }` |
+| `GET`   | `/libraries`     | Liste toutes les bibliothèques          | Public             | -                                   |
+| `GET`   | `/libraries/:id` | Récupère les détails d'une bibliothèque | Admin seulement    | Param: `id` (number)                |
+
+---
+
+### 7. Emprunts (`/loans`)
+
+| Méthode  | Endpoint            | Description                           | Accès              | Paramètres                   |
+| -------- | ------------------- | ------------------------------------- | ------------------ | ---------------------------- |
+| `POST`   | `/loans`            | Crée un nouvel emprunt                | Admin, Utilisateur | Body: `{ user_id, book_id }` |
+| `GET`    | `/loans`            | Liste tous les emprunts               | Admin seulement    | -                            |
+| `GET`    | `/loans/:id`        | Récupère les détails d'un emprunt     | Admin seulement    | Param: `id` (number)         |
+| `PATCH`  | `/loans/:id/return` | Marque un livre comme retourné        | Admin, Utilisateur | Param: `id` (number)         |
+| `DELETE` | `/loans/:id`        | Supprime un emprunt (admin seulement) | Admin seulement    | Param: `id` (number)         |
 
 ---
 
@@ -164,7 +184,7 @@ npm run start:prod
 Développeur Javascript & Typescript
 
 **Compétences clés** :  
-`NestJS` `TypeScript` `TypeORM` `MySQL` `API Design` `Swagger` `Architecture Logicielle`
+`NestJS` `TypeScript` `TypeORM` `MySQL` `API Design` `Swagger` `Architecture Logicielle` `Passport.js`
 
 **Contribution** :  
 Développement de l'API complète avec :
@@ -174,3 +194,4 @@ Développement de l'API complète avec :
 - Système de gestion de bibliothèque
 - Sécurité des données (BCrypt)
 - Validation des entrées
+- Module d'authentification
