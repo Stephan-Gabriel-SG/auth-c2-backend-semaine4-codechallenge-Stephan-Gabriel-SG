@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { LibrariesService } from './libraries.service';
 import { CreateLibraryDto } from './dto/create-library.dto';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiExtraModels,
   ApiNotFoundResponse,
@@ -15,6 +16,9 @@ import { SuccessResponseDto } from 'common/dto/api-response.dto';
 import { Library } from './entities/library.entity';
 import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { LibraryDto } from './dto/library.dto';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @ApiTags('Libraries')
 @Controller('libraries')
@@ -22,6 +26,9 @@ export class LibrariesController {
   constructor(private readonly librariesService: LibrariesService) {}
 
   @Post()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles('admin', 'user')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Créer une nouvelle bibliothèque' })
   @ApiBody({ type: CreateLibraryDto })
   @ApiExtraModels(SuccessResponseDto, LibraryDto)
@@ -76,6 +83,9 @@ export class LibrariesController {
   }
 
   @Get(':id')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Obtenir une bibliothèque par son ID' })
   @ApiParam({
     name: 'id',
