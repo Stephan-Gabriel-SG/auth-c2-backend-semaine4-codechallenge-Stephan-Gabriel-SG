@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { BooksService } from './books.service';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiExtraModels,
   ApiOperation,
@@ -15,6 +24,9 @@ import { SuccessResponseDto } from 'common/dto/api-response.dto';
 import { ErrorResponseDto } from 'common/dto/api-error.dto';
 import { BookDto } from './dto/book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @ApiTags('Books')
 @Controller('books')
@@ -22,6 +34,9 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles('admin', 'user')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Créer un nouveau livre' })
   @ApiBody({ type: CreateBookDto })
   @ApiExtraModels(SuccessResponseDto, BookDto)
