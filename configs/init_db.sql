@@ -7,11 +7,12 @@ CREATE DATABASE mini_library;
 USE mini_library;
 
 CREATE TABLE `users` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) UNIQUE,
-  `password_hash` varchar(255),
-  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) UNIQUE NOT NULL,
+  `role` ENUM('admin', 'user') NOT NULL DEFAULT 'user',
+  `password_hash` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `libraries` (
@@ -53,10 +54,10 @@ ALTER TABLE `loans` ADD FOREIGN KEY (`book_id`) REFERENCES `books` (`id`);
 
 -- Insertion de 3 utilisateurs
 -- Password test2025
-INSERT INTO users (name, email, password_hash, created_at) VALUES
-  ('Stéphan Gabriel', 'stephan@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP),
-  ('Aina Rakoto', 'aina@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP),
-  ('Jean Claude', 'jean@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP);
+INSERT INTO users (name, email, password_hash, created_at, role) VALUES
+  ('Stéphan Gabriel', 'stephan@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP,'admin'),
+  ('Aina Rakoto', 'aina@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP,'user'),
+  ('Jean Claude', 'jean@example.com', '$2b$10$yYr73V1SOxOPsyhCwxhhBe/6K8kc52xYlYWFxekMH8dJD7jnsf3WK', CURRENT_TIMESTAMP,'user');
 
 -- Insertion de bibliothèques (chaque user gère une seule bibliothèque)
 INSERT INTO libraries (user_id, name, location, created_at) VALUES
